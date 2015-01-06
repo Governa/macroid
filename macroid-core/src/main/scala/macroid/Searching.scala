@@ -42,6 +42,11 @@ object CanFindViews {
     def find[V <: View](x: View, id: Int) = Ui(SafeCast[View, V](x.findViewById(id)))
   }
 
+  implicit def `Option View can find views`[X](implicit canFindViews: CanFindViews[X]) = new CanFindViews[Option[X]] {
+    def find[V <: View](ui: Option[X], id: Int) =
+      ui.map(x => canFindViews.find[V](x, id)).getOrElse(Ui(None))
+  }
+
   implicit object `Activity can find views` extends CanFindViews[Activity] {
     def find[V <: View](x: Activity, id: Int) = Ui(SafeCast[View, V](x.findViewById(id)))
   }
