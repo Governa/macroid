@@ -7,7 +7,11 @@ import android.app.Activity
 import scala.reflect.ClassTag
 import macroid.Ui
 
-trait AkkaActivity { self: Activity ⇒
+trait BaseAkkaActivity { self: Activity ⇒
+  def actorSystem: ActorSystem
+}
+
+trait AkkaActivity extends BaseAkkaActivity { self: Activity ⇒
   val actorSystemName: String
   lazy val actorSystem = ActorSystem(
     actorSystemName,
@@ -17,7 +21,7 @@ trait AkkaActivity { self: Activity ⇒
 }
 
 trait AkkaFragment extends Fragment {
-  def actorSystem = getActivity.asInstanceOf[AkkaActivity].actorSystem
+  def actorSystem = getActivity.asInstanceOf[BaseAkkaActivity].actorSystem
   def actor: Option[ActorSelection]
 
   abstract override def onStart() = {
